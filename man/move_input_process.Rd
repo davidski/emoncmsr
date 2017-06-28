@@ -2,16 +2,20 @@
 % Please edit documentation in R/inputs.R
 \name{move_input_process}
 \alias{move_input_process}
-\title{List available feeds}
+\title{Move input process}
 \usage{
 move_input_process(inputid, processid, moveby)
 }
 \arguments{
-\item{authenticated}{Retrieve authenticated feeds}
+\item{inputid}{Retrieve authenticated feeds}
+
+\item{processid}{Retrieve authenticated feeds}
+
+\item{moveby}{Retrieve authenticated feeds}
 }
 \value{
 An httr response object
 }
 \description{
-List available feeds
+Moves the rank order of a given feed's process step
 }

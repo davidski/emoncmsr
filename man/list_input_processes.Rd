@@ -2,16 +2,16 @@
 % Please edit documentation in R/inputs.R
 \name{list_input_processes}
 \alias{list_input_processes}
-\title{List available feeds}
+\title{List input processes}
 \usage{
 list_input_processes(inputid)
 }
 \arguments{
-\item{authenticated}{Retrieve authenticated feeds}
+\item{inputid}{Retrieve authenticated feeds}
 }
 \value{
 An httr response object
 }
 \description{
-List available feeds
+List all of the processes associated with a given input.
 }

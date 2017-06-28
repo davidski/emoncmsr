@@ -2,16 +2,16 @@
 % Please edit documentation in R/inputs.R
 \name{delete_input}
 \alias{delete_input}
-\title{List available feeds}
+\title{Delete an input by id}
 \usage{
-delete_input()
+delete_input(inputid)
 }
 \arguments{
-\item{authenticated}{Retrieve authenticated feeds}
+\item{inputid}{ID of the input to delete}
 }
 \value{
 An httr response object
 }
 \description{
-List available feeds
+Delete an input by id
 }

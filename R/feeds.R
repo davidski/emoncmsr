@@ -4,6 +4,7 @@
 #'
 #' @param authenticated Retrieve authenticated feeds
 #' @return An httr response object
+#' @importFrom dplyr %>%
 #' @export
 list_feeds <- function(authenticated = TRUE) {
     send_emon_request("feed/list.json", if (!authenticated) {
@@ -16,6 +17,7 @@ list_feeds <- function(authenticated = TRUE) {
 #'
 #' @param id ID (integer) of the feed to delete.
 #' @return A tibble of data feed values
+#' @importFrom dplyr %>%
 delete_feed <- function(feedid) {
     send_emon_request("feed/delete.json", list(id = 0)) %>%
     httr::content(as = "text", encoding = "UTF-8") %>%
@@ -26,6 +28,7 @@ delete_feed <- function(feedid) {
 #'
 #' @param id ID (integer) of the feed to retrieve.
 #' @return A tibble of data feed values
+#' @importFrom dplyr %>%
 get_feed_size <- function(id) {
     send_emon_request("feed/list.json", if (!authenticated) {
         list(userid = 0)
@@ -39,6 +42,7 @@ get_feed_size <- function(id) {
 #' @param id ID (integer) of the feed to retrieve.
 #' @return A tibble of data feed values
 #' @export
+#' @importFrom dplyr %>%
 get_feed_values <- function(id = 1) {
     dat <- if (length(id) == 1) {
         send_emon_request("feed/value.json", list(id = id))
@@ -55,6 +59,7 @@ get_feed_values <- function(id = 1) {
 #' @param id Feed ID to retrieve.
 #' @return A tibble of metadata information
 #' @export
+#' @importFrom dplyr %>%
 get_feed_metadata <- function(id) {
     send_emon_request("feed/getmeta.json", list(id = id)) %>%
         httr::content(as = "text", encoding = "UTF-8") %>%
@@ -68,6 +73,7 @@ get_feed_metadata <- function(id) {
 #' @param start Start time (must be coercable by lubridate to unixtime)
 #' @return Tibble
 #' @export
+#' @importFrom dplyr %>%
 get_feed_data <- function(id, start = as.integer(lubridate::now() -
     lubridate::ddays(7)), end = as.integer(lubridate::now()),
     interval = 60 * 30) {
@@ -86,6 +92,7 @@ get_feed_data <- function(id, start = as.integer(lubridate::now() -
 #' seems to be redundent with the get_feeds function
 #' @return An httr response object
 #' @export
+#' @importFrom dplyr %>%
 get_feed_fields <- function(id) {
     # https://emoncms.org/feed/aget.json?id=1
     send_emon_request("feed/aget.json", list(id = id)) %>%
@@ -97,6 +104,7 @@ get_feed_fields <- function(id) {
 #' @return XTS object of the data in the feed.
 #' @param file Full path to bare (no file extension) feed
 #' @export
+#' @importFrom dplyr %>%
 read_feed_file <- function(feed_id) {
     bytes_per_record <- 4
 

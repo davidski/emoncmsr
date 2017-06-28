@@ -3,17 +3,14 @@
 \name{list_inputs}
 \alias{list_inputs}
 \title{Functions for interacting with the emonCMS inputs.
-List available feeds}
+List all available inputs}
 \usage{
 list_inputs()
 }
-\arguments{
-\item{authenticated}{Retrieve authenticated feeds}
-}
 \value{
-An httr response object
+A tibble of available inputs
 }
 \description{
 Functions for interacting with the emonCMS inputs.
-List available feeds
+List all available inputs
 }

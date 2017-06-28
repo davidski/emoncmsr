@@ -2,16 +2,18 @@
 % Please edit documentation in R/inputs.R
 \name{delete_input_process}
 \alias{delete_input_process}
-\title{List available feeds}
+\title{Delete input process}
 \usage{
 delete_input_process(inputid, processid)
 }
 \arguments{
-\item{authenticated}{Retrieve authenticated feeds}
+\item{inputid}{ID of feed to modify.}
+
+\item{processid}{ID of the processing step to remove}
 }
 \value{
 An httr response object
 }
 \description{
-List available feeds
+Remove a processing step from an input.
 }

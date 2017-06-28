@@ -2,16 +2,16 @@
 % Please edit documentation in R/inputs.R
 \name{reset_input_processes}
 \alias{reset_input_processes}
-\title{List available feeds}
+\title{Reset input processes}
 \usage{
 reset_input_processes(inputid)
 }
 \arguments{
-\item{authenticated}{Retrieve authenticated feeds}
+\item{inputid}{Retrieve authenticated feeds}
 }
 \value{
 An httr response object
 }
 \description{
-List available feeds
+Removes all processing steps associated with an input
 }

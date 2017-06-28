@@ -2,16 +2,23 @@
 % Please edit documentation in R/inputs.R
 \name{add_input_process}
 \alias{add_input_process}
-\title{List available feeds}
+\title{Add input process}
 \usage{
-add_input_process(inputid, processid, argv, newfeedname)
+add_input_process(inputid, processid, arg, newfeedname)
 }
 \arguments{
-\item{authenticated}{Retrieve authenticated feeds}
+\item{inputid}{Input to add the process step}
+
+\item{processid}{ID of the processing type to add}
+
+\item{arg}{Arguments for the processing feed}
+
+\item{newfeedname}{New feed name}
 }
 \value{
 An httr response object
 }
 \description{
-List available feeds
+Add a processing step to a given input. The processing step will be
+placed after an existing process steps.
 }
