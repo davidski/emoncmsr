@@ -17,5 +17,6 @@ set_feed_field(feed_id, field, value)
 An httr reponse object
 }
 \description{
-Set field values for a feed
+Note that attempting to set a field to its current value will generate
+a failure.
 }

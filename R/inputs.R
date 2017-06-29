@@ -22,19 +22,25 @@ delete_input <- function(inputid) {
 
 #' Post data to an input
 #'
-#' @param value Data value to post
-#' @param nodeid Node ID
+#' @param values List of name/value data pairs to post
+#' @param node Node name to post
 #' @return An httr response object
 #' @export
-post_data_to_input <- function(value, nodeid = "emoncmsr") {
-  list_params <- vector(mode = "list", length = 1)
-  names(list_params) <- nodeid
-  list_params[[nodeid]] <- value
-  send_emon_request("input/post.json",
-                    params = list(data = jsonlite::toJSON(list_params)))
+post_data_to_input <- function(values, nodeid = "emoncmsr") {
+
+  # emonCMS.ORG implementation
+  # list_params <- vector(mode = "list", length = 1)
+  # names(list_params) <- nodeid
+  # list_params[[nodeid]] <- value
+
+  list_params <- list(node = nodeid)
+  list_params <- c(list_params, list(fulljson = jsonlite::toJSON(values, auto_unbox = TRUE)))
+
+  send_emon_request("input/post.json", params = list_params) %>%
+    httr::content(as = "text", encoding = "UTF-8")
 }
 
-#' Post data to an input
+#' Post bulk data to an input
 #'
 #' @param value Data value to post
 #' @param nodeid Node ID
@@ -43,8 +49,9 @@ post_data_to_input <- function(value, nodeid = "emoncmsr") {
 #' @export
 post_bulk_data_to_input <- function(value, nodeid = "emoncmsr",
                                     timestamp = as.integer(Sys.time())) {
-  list_params <- list(data = jsonlite::toJSON(c(timestamp, "test", value)))
-  send_emon_request("input/bulk.json", params = list_params)
+  send_emon_request("input/bulk.json", params = list(node = nodeid),
+                    post_body = list(data=jsonlite::toJSON(c(timestamp, "test", value))),
+                    method = "POST")
 }
 
 #' Get input processes
@@ -55,8 +62,30 @@ post_bulk_data_to_input <- function(value, nodeid = "emoncmsr",
 #' @return An httr response object
 #' @export
 get_input_processes <- function(inputid) {
-  send_emon_request("input/process/list.json", params = list(inputid = inputid))
+  # emoncms.org only
+  #send_emon_request("input/process/list.json", params = list(inputid = inputid))
+
+  send_emon_request("input/process/get.json", params = list(inputid = inputid)) %>%
+    httr::content()
 }
+
+#' Set input process
+#'
+#' Set the entire processing chain for an input. This appears to be the counter-
+#' part to the `process/add` call from EmonCMS.ORG
+#'
+#' @param inputid Input ID to modify
+#' @param processlist Full process list
+#' @return A tibble with success/failure and any additional messages
+#' @export
+set_input_process <- function(inputid, processlist) {
+  send_emon_request("input/process/set.json",
+                    params = list(inputid = inputid),
+                    post_body = list(processlist = processlist),
+                    method = "POST") %>%
+    httr::content() %>% tibble::as_tibble()
+}
+
 
 #' Add input process
 #'

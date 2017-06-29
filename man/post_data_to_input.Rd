@@ -4,12 +4,12 @@
 \alias{post_data_to_input}
 \title{Post data to an input}
 \usage{
-post_data_to_input(value, nodeid = "emoncmsr")
+post_data_to_input(values, nodeid = "emoncmsr")
 }
 \arguments{
-\item{value}{Data value to post}
+\item{values}{List of name/value data pairs to post}
 
-\item{nodeid}{Node ID}
+\item{node}{Node name to post}
 }
 \value{
 An httr response object

@@ -14,16 +14,16 @@ Usage
 -----
 
 -   Set environment variables
--   EMONCMS\_URI - Full URL (w/final slash) to API endpoint
--   EMONCMS\_API\_KEY - API key value (read or write) to API
+    -   EMONCMS\_URI - Full URL (w/final slash) to API endpoint
+    -   EMONCMS\_API\_KEY - API key value (read or write) to API
 -   Inputs
--   Post to inputs
--   List inputs
--   Delete inputs
+    -   Post to inputs
+    -   List inputs
+    -   Delete inputs
 -   Feeds
--   List feeds
--   Get range of data from a feed
--   Get storage info for all feeds
+    -   List feeds
+    -   Get range of data from a feed
+    -   Get storage info for all feeds
 
 Test results
 ------------
@@ -35,7 +35,7 @@ library(testthat)
 date()
 ```
 
-    ## [1] "Wed Jun 28 21:07:05 2017"
+    ## [1] "Thu Jun 29 06:21:53 2017"
 
 ``` r
 test_dir("tests/")

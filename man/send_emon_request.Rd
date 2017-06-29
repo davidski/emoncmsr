@@ -4,10 +4,19 @@
 \alias{send_emon_request}
 \title{Send a request to emonCMS}
 \usage{
-send_emon_request(uri, params = NULL, verbose = FALSE)
+send_emon_request(uri, params = NULL, method = "GET", post_body = NULL,
+  verbose = FALSE)
 }
 \arguments{
-\item{verbose}{if set (boolean), will warn on the query parameters to be sent}
+\item{uri}{Leaf node of API endpoint. Appended to `emoncms_uri()`.}
+
+\item{params}{Any additional query parameters to send. Defaults to NULL.}
+
+\item{method}{Wether to GET (default) or POST the call.}
+
+\item{post_body}{For POST calls, any fields to specify in the POST body.}
+
+\item{verbose}{If set (boolean), will warn on the query parameters to be sent}
 }
 \value{
 An httr response object

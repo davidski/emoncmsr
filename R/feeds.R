@@ -14,6 +14,26 @@ list_feeds <- function(authenticated = TRUE) {
     tibble::as_tibble()
 }
 
+#' Create a new feed.
+#'
+#' @param name Descriptive name for the new feed.
+#' @param tag Tag for the new feed.
+#' @param datatype Defaults to 1 (REALTIME)
+#' @param engine Timeseries storage engine. Defaults to 5 (PHPFINA)
+#' @param interval Interval of time series in seconds. Defaults to 10.
+#' @importFrom dplyr %>%
+#' @return Tibble with id of new feed
+#' @export
+create_feed <- function(name, tag, datatype = 1, engine = 5, interval = 10) {
+    list_params <- list(tag = tag, name = name, datatype = datatype,
+                        engine = engine,
+                        options = paste0('{"interval":', interval, '}'))
+    send_emon_request("feed/create.json", params = list_params) %>%
+      httr::content(as = "text", encoding = "UTF-8") %>%
+      jsonlite::fromJSON() %>%
+      tibble::as_tibble()
+}
+
 #' Delete a feed identified by ID.
 #'
 #' @param feedid ID (integer) of the feed to delete.
@@ -21,7 +41,7 @@ list_feeds <- function(authenticated = TRUE) {
 #' @importFrom dplyr %>%
 #' @export
 delete_feed <- function(feedid) {
-    send_emon_request("feed/delete.json", list(id = 0)) %>%
+    send_emon_request("feed/delete.json", list(id = feedid)) %>%
     httr::content(as = "text", encoding = "UTF-8") %>%
     jsonlite::fromJSON() %>% tibble::as_tibble()
 }

@@ -1,9 +1,13 @@
 #' Send a request to emonCMS
 #'
 #' @return An httr response object
-#' @param verbose if set (boolean), will warn on the query parameters to be sent
+#' @param uri Leaf node of API endpoint. Appended to `emoncms_uri()`.
+#' @param params Any additional query parameters to send. Defaults to NULL.
+#' @param method Wether to GET (default) or POST the call.
+#' @param post_body For POST calls, any fields to specify in the POST body.
+#' @param verbose If set (boolean), will warn on the query parameters to be sent
 #' @export
-send_emon_request <- function(uri, params = NULL, verbose = FALSE) {
+send_emon_request <- function(uri, params = NULL, method = "GET", post_body = NULL, verbose = FALSE) {
   url <- paste0(emoncms_uri(), uri)
   # currently add the API key to the query string as header support is
   # broken on emoncms.org and only available on emoncms master as of 6/27/17
@@ -11,9 +15,15 @@ send_emon_request <- function(uri, params = NULL, verbose = FALSE) {
   query_params <- c(query_params, params)
   if (verbose)
     warning("Sending query params", (params))
-  response <- httr::GET(url, query = query_params,
+  if (method != "POST") {
+    response <- httr::GET(url, query = query_params,
                         httr::add_headers(Authorization =
                                              paste("Bearer", emoncms_api_key())))
+  } else {
+    response <- httr::POST(url, query = query_params, body = post_body,
+                          httr::add_headers(Authorization =
+                                               paste("Bearer", emoncms_api_key())))
+  }
   response
 }
 
