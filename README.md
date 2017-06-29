@@ -13,6 +13,18 @@ devtools::install_github("davidski/emoncmsr")
 Usage
 -----
 
+-   Set environment variables
+-   EMONCMS\_URI - Full URL (w/final slash) to API endpoint
+-   EMONCMS\_API\_KEY - API key value (read or write) to API
+-   Inputs
+-   Post to inputs
+-   List inputs
+-   Delete inputs
+-   Feeds
+-   List feeds
+-   Get range of data from a feed
+-   Get storage info for all feeds
+
 Test results
 ------------
 
@@ -23,7 +35,7 @@ library(testthat)
 date()
 ```
 
-    ## [1] "Mon Jun 26 20:27:22 2017"
+    ## [1] "Wed Jun 28 21:07:05 2017"
 
 ``` r
 test_dir("tests/")
