@@ -7,7 +7,7 @@
 reset_input_processes(inputid)
 }
 \arguments{
-\item{inputid}{Retrieve authenticated feeds}
+\item{inputid}{Input ID to reset.}
 }
 \value{
 An httr response object

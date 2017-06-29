@@ -4,10 +4,10 @@
 \alias{get_feed_values}
 \title{Retrieve the most current value from a given feed.}
 \usage{
-get_feed_values(id = 1)
+get_feed_values(feedid = 1)
 }
 \arguments{
-\item{id}{ID (integer) of the feed to retrieve.}
+\item{feedid}{ID (integer) of the feed to retrieve.}
 }
 \value{
 A tibble of data feed values

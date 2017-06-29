@@ -7,7 +7,7 @@
 emoncms_api_key()
 }
 \value{
-Returns the API key to use for the emonCMS server.
+The API key to use for the emonCMS server.
 }
 \description{
 Fetch the emonCMS API key from the environment.

@@ -2,19 +2,23 @@
 % Please edit documentation in R/feeds.R
 \name{get_feed_data}
 \alias{get_feed_data}
-\title{Determine fonts we can/should use.}
+\title{Get a timerange of data from a feed}
 \usage{
-get_feed_data(id, start = as.integer(lubridate::now() - lubridate::ddays(7)),
-  end = as.integer(lubridate::now()), interval = 60 * 30)
+get_feed_data(feedid, start = as.integer(lubridate::now() -
+  lubridate::ddays(7)), end = as.integer(lubridate::now()), interval = 60 *
+  30)
 }
 \arguments{
-\item{id}{ID of feed}
+\item{feedid}{ID of feed}
 
 \item{start}{Start time (must be coercable by lubridate to unixtime)}
+
+\item{end}{End time (must be coercable by lubridate to unixtime). Defaults
+to now.}
 }
 \value{
 Tibble
 }
 \description{
-Determine fonts we can/should use.
+Get a timerange of data from a feed
 }

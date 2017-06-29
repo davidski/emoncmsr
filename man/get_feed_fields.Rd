@@ -2,13 +2,16 @@
 % Please edit documentation in R/feeds.R
 \name{get_feed_fields}
 \alias{get_feed_fields}
-\title{Determine fonts we can/should use.}
+\title{Get the fields associated with a feed}
 \usage{
-get_feed_fields(id)
+get_feed_fields(feedid)
+}
+\arguments{
+\item{feedid}{ID of the feed}
 }
 \value{
-An httr response object
+A tibble with all feed information
 }
 \description{
-seems to be redundent with the get_feeds function
+This seems to redundent with the get_feeds function
 }

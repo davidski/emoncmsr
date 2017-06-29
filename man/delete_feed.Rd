@@ -7,7 +7,7 @@
 delete_feed(feedid)
 }
 \arguments{
-\item{id}{ID (integer) of the feed to delete.}
+\item{feedid}{ID (integer) of the feed to delete.}
 }
 \value{
 A tibble of data feed values

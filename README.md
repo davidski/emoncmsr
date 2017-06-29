@@ -1,12 +1,3 @@
-emoncmsr README
-================
-David F. Severski
-
--   [Installation](#installation)
--   [Usage](#usage)
--   [Test results](#test-results)
--   [Contributing](#contributing)
--   [License](#license)
 
 `emoncmsr` : Tools to work with the emonCMS API.
 
@@ -32,7 +23,7 @@ library(testthat)
 date()
 ```
 
-    ## [1] "Mon Jun 26 19:06:59 2017"
+    ## [1] "Mon Jun 26 20:27:22 2017"
 
 ``` r
 test_dir("tests/")

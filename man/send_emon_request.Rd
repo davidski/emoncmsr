@@ -6,6 +6,9 @@
 \usage{
 send_emon_request(uri, params = NULL, verbose = FALSE)
 }
+\arguments{
+\item{verbose}{if set (boolean), will warn on the query parameters to be sent}
+}
 \value{
 An httr response object
 }

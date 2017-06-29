@@ -3,14 +3,14 @@
 \name{list_inputs}
 \alias{list_inputs}
 \title{Functions for interacting with the emonCMS inputs.
-List all available inputs}
+List all available inputs and their most recent values.}
 \usage{
 list_inputs()
 }
 \value{
-A tibble of available inputs
+A tibble of feeds and their current values
 }
 \description{
 Functions for interacting with the emonCMS inputs.
-List all available inputs
+List all available inputs and their most recent values.
 }

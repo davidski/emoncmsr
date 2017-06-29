@@ -1,12 +1,6 @@
 ---
-title: "emoncmsr README"
-author: "David F. Severski"
 output:
-  github_document:
-    toc: yes
-  html_document:
-    toc: yes
-    toc_float: yes
+  github_document
 ---
 
 `emoncmsr` : Tools to work with the emonCMS API.
@@ -20,6 +14,18 @@ devtools::install_github("davidski/emoncmsr")
 
 ## Usage
 
+* Set environment variables
+  * EMONCMS_URI - Full URL (w/final slash) to API endpoint
+  * EMONCMS_API_KEY - API key value (read or write) to API
+* Inputs
+  * Post to inputs
+  * List inputs
+  * Delete inputs
+* Feeds
+  * List feeds
+  * Get range of data from a feed
+  * Get storage info for all feeds
+
 ## Test results
 
 ```{r}
@@ -30,8 +36,6 @@ date()
 
 test_dir("tests/")
 ```
-
-
 
 # Contributing
 

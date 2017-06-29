@@ -7,7 +7,7 @@
 emoncms_uri()
 }
 \value{
-Returns the URI to the emonCMS endpoint.
+The URI to the emonCMS endpoint.
 }
 \description{
 Fetch URI to the emoncms server

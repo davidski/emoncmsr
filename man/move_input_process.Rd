@@ -7,11 +7,11 @@
 move_input_process(inputid, processid, moveby)
 }
 \arguments{
-\item{inputid}{Retrieve authenticated feeds}
+\item{inputid}{Input ID to modify the process list.}
 
-\item{processid}{Retrieve authenticated feeds}
+\item{processid}{Which process to modify.}
 
-\item{moveby}{Retrieve authenticated feeds}
+\item{moveby}{How many slots forward or backward to move the process.}
 }
 \value{
 An httr response object

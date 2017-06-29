@@ -4,10 +4,10 @@
 \alias{get_feed_metadata}
 \title{Gets metadata information for a data feed.}
 \usage{
-get_feed_metadata(id)
+get_feed_metadata(feedid)
 }
 \arguments{
-\item{id}{Feed ID to retrieve.}
+\item{feedid}{Feed ID to retrieve.}
 }
 \value{
 A tibble of metadata information

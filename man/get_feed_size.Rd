@@ -2,16 +2,13 @@
 % Please edit documentation in R/feeds.R
 \name{get_feed_size}
 \alias{get_feed_size}
-\title{Retrieve the most current value from a given feed.}
+\title{Retrieve the current consumed size of all feeds}
 \usage{
-get_feed_size(id)
-}
-\arguments{
-\item{id}{ID (integer) of the feed to retrieve.}
+get_feed_size()
 }
 \value{
-A tibble of data feed values
+Integer of bytes consumed
 }
 \description{
-Retrieve the most current value from a given feed.
+Retrieve the current consumed size of all feeds
 }

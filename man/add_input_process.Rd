@@ -20,5 +20,5 @@ An httr response object
 }
 \description{
 Add a processing step to a given input. The processing step will be
-placed after an existing process steps.
+placed after any existing process steps.
 }
