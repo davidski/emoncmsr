@@ -46,15 +46,18 @@ post_data_to_input <- function(values, nodeid = "emoncmsr") {
 
 #' Post bulk data to an input
 #'
-#' @param value Data value to post
-#' @param nodeid Node ID
-#' @param timestamp UNIX timestamp
+#' @param data Dataframe of offset, nodeid, values to post to the input.
+#' @param reference_time A reference UNIX timestamp to which all offsets are
+#'     added/subtracted for each data point. Defaults to the current time.
 #' @return An httr response object
+#' @importFrom dplyr %>%
 #' @export
-post_bulk_data_to_input <- function(value, nodeid = "emoncmsr",
-                                    timestamp = as.integer(Sys.time())) {
-  send_emon_request("input/bulk.json", params = list(time = timestamp),
-                    post_body = list(data=jsonlite::toJSON(c(timestamp, "test", value))),
+post_bulk_data_to_input <- function(data,
+                                    reference_time = as.integer(Sys.time())) {
+  bulk_data <- dplyr::select(data, c(offset, nodeid, value)) %>%
+    jsonlite::toJSON(dataframe = "values")
+  send_emon_request("input/bulk.json", params = list(time = reference_time),
+                    post_body = list(data = bulk_data),
                     method = "POST")
 }
 

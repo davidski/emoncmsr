@@ -4,15 +4,13 @@
 \alias{post_bulk_data_to_input}
 \title{Post bulk data to an input}
 \usage{
-post_bulk_data_to_input(value, nodeid = "emoncmsr",
-  timestamp = as.integer(Sys.time()))
+post_bulk_data_to_input(data, reference_time = as.integer(Sys.time()))
 }
 \arguments{
-\item{value}{Data value to post}
+\item{data}{Dataframe of offset, nodeid, values to post to the input.}
 
-\item{nodeid}{Node ID}
-
-\item{timestamp}{UNIX timestamp}
+\item{reference_time}{A reference UNIX timestamp to which all offsets are
+added/subtracted for each data point. Defaults to the current time.}
 }
 \value{
 An httr response object
