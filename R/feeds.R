@@ -17,17 +17,19 @@ list_feeds <- function(authenticated = TRUE) {
 #'
 #' @param name Descriptive name for the new feed.
 #' @param tag Tag for the new feed.
-#' @param datatype Defaults to 1 (REALTIME). May also be 2 (DAILY).
-#' @param engine Timeseries storage engine. Defaults to 5 (PHPFINA). May
-#'     also be 7 (VIRTUAL).
+#' @param datatype Defaults to REALTIME (1). May also be DAILY (2).
+#' @param engine Timeseries storage engine. Defaults to PHPFINA (5). May
+#'     also be VIRTUAL (7)).
 #' @param interval Interval of time series in seconds. Defaults to 10.
 #' @importFrom dplyr %>%
 #' @return Tibble with id of new feed
 #' @export
-create_feed <- function(name, tag, datatype = c(1, 2), engine = c(5, 7),
+create_feed <- function(name, tag, datatype = c("realtime", "daily"), engine = c("phpfina", "virtual"),
                         interval = 10) {
-    datatype <- match.arg(datatype)
-    engine <- match.arg(engine)
+  datatypes <- c("realtime" = 5, "daily" = 2)
+  datatype <- unname(datatypes[match.arg(datatype)])
+  engines <- c("phpfina" = 1, "virtual" = 7)
+    engine <- unname(engines[match.arg(engine)])
     list_params <- list(tag = tag, name = name, datatype = datatype,
                         engine = engine,
                         options = paste0('{"interval":', interval, '}'))

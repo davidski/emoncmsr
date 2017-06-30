@@ -35,10 +35,14 @@ list_inputs()
 # create some beverage data
 dat <- list(coffee = 42, tea = 6, water = 42)
 post_data_to_input(dat)
-list_inputs() %>% filter(name == "coffee")
+list_inputs() %>% filter(nodeid =="emoncmsr", name == "coffee")
 # store the id of the new input
-inputid <- list_inputs() %>% filter(name == "coffee") %>% pull(id)
+inputid <- list_inputs() %>% filter(nodeid == "emoncmsr", name == "coffee") %>% pull(id)
 inputid
+
+# set a friendly description for our new input
+set_input_field(inputid, "description", "cups of coffee remaining in pot")
+list_inputs() %>% filter(id == inputid)
 
 # Create feeds for one of our new inputs
 feed_response <- create_feed("coffeelevel", "testnode")
@@ -46,14 +50,29 @@ feed_response
 list_feeds() %>% filter(id == feed_response$feedid)
 
 # Hook up the coffee monitor to the feed
-set_input_process(inputid, paste(1, feed_response$feedid, sep=":"))
+set_input_process(inputid, paste(1, feed_response$feedid, sep = ":"))
 get_input_processes(inputid)
 
-# Post new data to our inputs
+# Post new data to all three new inputs
 dat <- list(coffee = 86, tea = 100, water = 4)
 post_data_to_input(dat)
 
-# Verify that the new value is posted
+# We can also use the bulk data input format for sending a dataframe 
+# worth of data, all at differnet offsets to an optional timestamp
+dat <- tibble::tribble(~offset, ~nodeid, ~value,
+               -100, "emoncmsr", list(coffee = 100),
+               -50, "emoncmsr", list(tea = 50),
+               -10, "emoncmsr", list(water = 10))
+post_bulk_data_to_input(dat)
+
+# show the values we just posted appeared in the input
+list_inputs() %>% filter(nodeid == "emoncmsr")
+
+# we can also post with a specific reference time
+reference_time <- lubridate::as_datetime("2017-03-27 01:30:00") %>% as.integer()
+post_bulk_data_to_input(dat, reference_time)
+
+# show the logged input made it to our new feed
 get_feed_values(feed_response$feedid)
 ```
 

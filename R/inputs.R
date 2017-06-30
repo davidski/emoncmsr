@@ -10,6 +10,22 @@ list_inputs <- function() {
     jsonlite::fromJSON() %>% tibble::as_tibble()
 }
 
+#' Set a field on an input
+#'
+#' @param inputid ID of the input to delete
+#' @param field Name of field to modify
+#' @param value New value of the field
+#' @return Tibble with succes, message columns
+#' @export
+set_input_field <- function(inputid, field, value) {
+  params_list <- list("inputid" = inputid,
+                      fields = jsonlite::toJSON(purrr::set_names(list(value),
+                                                                 field),
+                                                auto_unbox = TRUE))
+  send_emon_request("input/set.json", params = params_list) %>%
+    jsonlite::fromJSON() %>% tibble::as_tibble()
+}
+
 #' Delete an input by id
 #'
 #' @param inputid ID of the input to delete
@@ -55,7 +71,7 @@ post_data_to_input <- function(values, nodeid = "emoncmsr") {
 post_bulk_data_to_input <- function(data,
                                     reference_time = as.integer(Sys.time())) {
   bulk_data <- dplyr::select(data, c(offset, nodeid, value)) %>%
-    jsonlite::toJSON(dataframe = "values")
+    jsonlite::toJSON(dataframe = "values", auto_unbox = TRUE)
   send_emon_request("input/bulk.json", params = list(time = reference_time),
                     post_body = list(data = bulk_data),
                     method = "POST")

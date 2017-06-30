@@ -9,11 +9,7 @@
 #' @export
 send_emon_request <- function(uri, params = NULL, method = "GET",
                               post_body = NULL, verbose = FALSE) {
-<<<<<<< HEAD
   url <- paste0(emoncms_uri(), uri)
-=======
-  url <- httr::modify_url(emoncms_uri(), path = uri)
->>>>>>> a7d362235e06e4cb2f21cea305094960c5a26798
   ua <- httr::user_agent("http://github.com/davidski/emoncmsr")
 
   # currently add the API key to the query string as header support is

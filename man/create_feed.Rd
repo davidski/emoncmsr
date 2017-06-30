@@ -4,16 +4,18 @@
 \alias{create_feed}
 \title{Create a new feed.}
 \usage{
-create_feed(name, tag, datatype = 1, engine = 5, interval = 10)
+create_feed(name, tag, datatype = c("realtime", "daily"),
+  engine = c("phpfina", "virtual"), interval = 10)
 }
 \arguments{
 \item{name}{Descriptive name for the new feed.}
 
 \item{tag}{Tag for the new feed.}
 
-\item{datatype}{Defaults to 1 (REALTIME)}
+\item{datatype}{Defaults to REALTIME (1). May also be DAILY (2).}
 
-\item{engine}{Timeseries storage engine. Defaults to 5 (PHPFINA)}
+\item{engine}{Timeseries storage engine. Defaults to PHPFINA (5). May
+also be VIRTUAL (7)).}
 
 \item{interval}{Interval of time series in seconds. Defaults to 10.}
 }
