@@ -17,14 +17,6 @@ devtools::install_github("davidski/emoncmsr")
 * Set environment variables
     * EMONCMS_URI - Full URL (w/final slash) to API endpoint
     * EMONCMS_API_KEY - API key value (read or write) to API
-* Inputs
-    * Post to inputs
-    * List inputs
-    * Delete inputs
-* Feeds
-    * List feeds
-    * Get range of data from a feed
-    * Get storage info for all feeds
 
 ```{r}
 library(emoncmsr)
@@ -35,7 +27,7 @@ list_inputs()
 # create some beverage data
 dat <- list(coffee = 42, tea = 6, water = 42)
 post_data_to_input(dat)
-list_inputs() %>% filter(nodeid =="emoncmsr", name == "coffee")
+list_inputs() %>% filter(nodeid == "emoncmsr", name == "coffee")
 # store the id of the new input
 inputid <- list_inputs() %>% filter(nodeid == "emoncmsr", name == "coffee") %>% pull(id)
 inputid
@@ -45,7 +37,7 @@ set_input_field(inputid, "description", "cups of coffee remaining in pot")
 list_inputs() %>% filter(id == inputid)
 
 # Create feeds for one of our new inputs
-feed_response <- create_feed("coffeelevel", "testnode")
+feed_response <- create_feed("coffeelevel", "emoncmsr")
 feed_response
 list_feeds() %>% filter(id == feed_response$feedid)
 
@@ -74,6 +66,14 @@ post_bulk_data_to_input(dat, reference_time)
 
 # show the logged input made it to our new feed
 get_feed_values(feed_response$feedid)
+```
+
+```{r}
+# Clean up
+list_feeds() %>% filter(tag == "emoncmsr") %>% pull(id) %>% 
+                          map(~ delete_feed(.x))
+list_inputs() %>% filter(nodeid == "emoncmsr") %>% pull(id) %>% 
+                           map(~ delete_input(.x))
 ```
 
 ## Test results
