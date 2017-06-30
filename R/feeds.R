@@ -46,6 +46,21 @@ delete_feed <- function(feedid) {
     jsonlite::fromJSON() %>% tibble::as_tibble()
 }
 
+#' Retrieve the number of buffer points pending write
+#'
+#' Checks the number of cached data feed points in the emonCMS cache layer
+#' (typically Redis) that have not yet been saved to disk.
+#'
+#' @return Number (integer) of data points pending flush to disk
+#' @importFrom dplyr %>%
+#' @export
+get_buffer_size <- function() {
+    send_emon_request("feed/buffersize.json") %>%
+      httr::content(as = "text", encoding = "UTF-8") %>%
+      as.integer()
+}
+
+
 #' Retrieve the current consumed size of all feeds
 #'
 #' @return Integer of bytes consumed
@@ -55,7 +70,7 @@ get_feed_size <- function() {
     send_emon_request("feed/updatesize.json") %>%
     httr::content(as = "text", encoding = "UTF-8") %>%
         jsonlite::fromJSON()
-  }
+}
 
 #' Retrieve the most current value from a given feed.
 #'
