@@ -53,7 +53,7 @@ post_data_to_input <- function(values, nodeid = "emoncmsr") {
 #' @export
 post_bulk_data_to_input <- function(value, nodeid = "emoncmsr",
                                     timestamp = as.integer(Sys.time())) {
-  send_emon_request("input/bulk.json", params = list(node = nodeid),
+  send_emon_request("input/bulk.json", params = list(time = timestamp),
                     post_body = list(data=jsonlite::toJSON(c(timestamp, "test", value))),
                     method = "POST")
 }
