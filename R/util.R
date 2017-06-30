@@ -10,7 +10,7 @@
 send_emon_request <- function(uri, params = NULL, method = "GET",
                               post_body = NULL, verbose = FALSE) {
   url <- httr::modify_url(emoncms_uri(), path = uri)
-  ua <- user_agent("http://github.com/davidski/emoncmsr")
+  ua <- httr::user_agent("http://github.com/davidski/emoncmsr")
 
   # currently add the API key to the query string as header support is
   # broken on emoncms.org and only available on emoncms master as of 6/27/17
@@ -32,7 +32,7 @@ send_emon_request <- function(uri, params = NULL, method = "GET",
   }
 
   # throw an error if we get an HTTP error back from the API
-  if httr::http_error(response) {
+  if (httr::http_error(response)) {
     stop("Error from emoncms API.")
   }
 

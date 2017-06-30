@@ -2,7 +2,7 @@
 % Please edit documentation in R/inputs.R
 \name{post_bulk_data_to_input}
 \alias{post_bulk_data_to_input}
-\title{Post data to an input}
+\title{Post bulk data to an input}
 \usage{
 post_bulk_data_to_input(value, nodeid = "emoncmsr",
   timestamp = as.integer(Sys.time()))
@@ -18,5 +18,5 @@ post_bulk_data_to_input(value, nodeid = "emoncmsr",
 An httr response object
 }
 \description{
-Post data to an input
+Post bulk data to an input
 }
