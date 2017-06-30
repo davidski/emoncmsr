@@ -26,9 +26,9 @@ list_feeds <- function(authenticated = TRUE) {
 #' @export
 create_feed <- function(name, tag, datatype = c("realtime", "daily"), engine = c("phpfina", "virtual"),
                         interval = 10) {
-  datatypes <- c("realtime" = 5, "daily" = 2)
+  datatypes <- c("realtime" = 1, "daily" = 2)
   datatype <- unname(datatypes[match.arg(datatype)])
-  engines <- c("phpfina" = 1, "virtual" = 7)
+  engines <- c("phpfina" = 5, "virtual" = 7)
     engine <- unname(engines[match.arg(engine)])
     list_params <- list(tag = tag, name = name, datatype = datatype,
                         engine = engine,
