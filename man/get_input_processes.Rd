@@ -10,7 +10,7 @@ get_input_processes(inputid)
 \item{inputid}{Input ID to get process list.}
 }
 \value{
-An httr response object
+A tibble with success/failure and any additional messages
 }
 \description{
 Get all of the processes associated with a given input.

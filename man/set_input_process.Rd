@@ -12,7 +12,7 @@ set_input_process(inputid, processlist)
 \item{processlist}{Full process list}
 }
 \value{
-A tibble with success/failure and any additional messages
+A tibble with success/message columns
 }
 \description{
 Set the entire processing chain for an input. This appears to be the counter-

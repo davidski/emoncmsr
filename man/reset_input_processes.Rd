@@ -10,7 +10,7 @@ reset_input_processes(inputid)
 \item{inputid}{Input ID to reset.}
 }
 \value{
-An httr response object
+A tibble with success/message columns
 }
 \description{
 Removes all processing steps associated with an input

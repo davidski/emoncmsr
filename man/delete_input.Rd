@@ -10,7 +10,7 @@ delete_input(inputid)
 \item{inputid}{ID of the input to delete}
 }
 \value{
-An httr response object
+Boolean success/failure
 }
 \description{
 Delete an input by id

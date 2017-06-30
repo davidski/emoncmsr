@@ -9,7 +9,6 @@
 list_feeds <- function(authenticated = TRUE) {
     send_emon_request("feed/list.json",
                       if (!authenticated) list(userid = 0)) %>%
-    httr::content(as = "text", encoding = "UTF-8") %>%
     jsonlite::fromJSON() %>%
     tibble::as_tibble()
 }
@@ -18,18 +17,21 @@ list_feeds <- function(authenticated = TRUE) {
 #'
 #' @param name Descriptive name for the new feed.
 #' @param tag Tag for the new feed.
-#' @param datatype Defaults to 1 (REALTIME)
-#' @param engine Timeseries storage engine. Defaults to 5 (PHPFINA)
+#' @param datatype Defaults to 1 (REALTIME). May also be 2 (DAILY).
+#' @param engine Timeseries storage engine. Defaults to 5 (PHPFINA). May
+#'     also be 7 (VIRTUAL).
 #' @param interval Interval of time series in seconds. Defaults to 10.
 #' @importFrom dplyr %>%
 #' @return Tibble with id of new feed
 #' @export
-create_feed <- function(name, tag, datatype = 1, engine = 5, interval = 10) {
+create_feed <- function(name, tag, datatype = c(1, 2), engine = c(5, 7),
+                        interval = 10) {
+    datatype <- match.arg(datatype)
+    engine <- match.arg(engine)
     list_params <- list(tag = tag, name = name, datatype = datatype,
                         engine = engine,
                         options = paste0('{"interval":', interval, '}'))
     send_emon_request("feed/create.json", params = list_params) %>%
-      httr::content(as = "text", encoding = "UTF-8") %>%
       jsonlite::fromJSON() %>%
       tibble::as_tibble()
 }
@@ -41,9 +43,13 @@ create_feed <- function(name, tag, datatype = 1, engine = 5, interval = 10) {
 #' @importFrom dplyr %>%
 #' @export
 delete_feed <- function(feedid) {
-    send_emon_request("feed/delete.json", list(id = feedid)) %>%
-    httr::content(as = "text", encoding = "UTF-8") %>%
-    jsonlite::fromJSON() %>% tibble::as_tibble()
+    dat <- send_emon_request("feed/delete.json", list(id = feedid)) %>%
+      jsonlite::fromJSON()
+    if (is.null(dat)) {
+      tibble::tibble(success = TRUE)
+    } else {
+      tibble::as_tibble(dat)
+    }
 }
 
 #' Retrieve the current consumed size of all feeds
@@ -53,7 +59,6 @@ delete_feed <- function(feedid) {
 #' @export
 get_feed_size <- function() {
     send_emon_request("feed/updatesize.json") %>%
-    httr::content(as = "text", encoding = "UTF-8") %>%
         jsonlite::fromJSON()
   }
 
@@ -70,9 +75,14 @@ get_feed_values <- function(feedid = 1) {
         send_emon_request("feed/fetch.json",
                           list(ids = paste(feedid, collapse = ",")))
     }
-    dat %>% httr::content(as = "text", encoding = "UTF-8") %>%
-      jsonlite::fromJSON() %>%
-      tibble::tibble(feed_id = feedid, value = .)
+    dat <- jsonlite::fromJSON(dat)
+
+    # attempt to return a more consistent response
+    if ("success" %in% names(dat)) {
+      tibble::as_tibble(dat) }
+    else {
+      tibble::tibble(feed_id = feedid, value = dat)
+    }
 }
 
 #' Gets metadata information for a data feed.
@@ -83,9 +93,8 @@ get_feed_values <- function(feedid = 1) {
 #' @importFrom dplyr %>%
 get_feed_metadata <- function(feedid) {
     send_emon_request("feed/getmeta.json", list(id = feedid)) %>%
-        httr::content(as = "text", encoding = "UTF-8") %>%
         jsonlite::fromJSON() %>% dplyr::bind_rows() %>%
-        dplyr::bind_cols(feed_id = id, .)
+        dplyr::bind_cols(feed_id = feedid, .)
 }
 
 #' Get a timerange of data from a feed
@@ -105,7 +114,6 @@ get_feed_data <- function(feedid, start = as.integer(lubridate::now() -
     send_emon_request("feed/data.json",
                       params = list(id = feedid, start = start, end = end,
                                     interval = interval)) %>%
-      httr::content(as = "text", encoding = "UTF-8") %>%
       jsonlite::fromJSON() %>% tibble::as_tibble() %>%
       dplyr::mutate(V1 = as.POSIXct(V1/1000, origin = "1970-01-01")) %>%
       dplyr::rename(date = V1, value = V2) %>%
@@ -122,7 +130,6 @@ get_feed_data <- function(feedid, start = as.integer(lubridate::now() -
 get_feed_fields <- function(feedid) {
     # https://emoncms.org/feed/aget.json?id=1
     send_emon_request("feed/aget.json", list(id = feedid)) %>%
-    httr::content(as = "text", encoding = "UTF-8") %>%
     jsonlite::fromJSON() %>%
     purrr::keep(~ length(.) != 0) %>%
     tibble::as_tibble()

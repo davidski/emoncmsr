@@ -7,17 +7,22 @@
 #' @export
 list_inputs <- function() {
   send_emon_request("input/list.json") %>%
-    httr::content(as = "text", encoding = "UTF-8") %>%
-    jsonlite::fromJSON()
+    jsonlite::fromJSON() %>% tibble::as_tibble()
 }
 
 #' Delete an input by id
 #'
 #' @param inputid ID of the input to delete
-#' @return An httr response object
+#' @return Boolean success/failure
 #' @export
 delete_input <- function(inputid) {
-  send_emon_request("input/delete.json", params = list("inputid" = inputid))
+  resp <- send_emon_request("input/delete.json", params = list("inputid" = inputid)) %>%
+    jsonlite::fromJSON()
+  if (is.null(resp)) {
+    TRUE
+  } else {
+    resp
+  }
 }
 
 #' Post data to an input
@@ -36,8 +41,7 @@ post_data_to_input <- function(values, nodeid = "emoncmsr") {
   list_params <- list(node = nodeid)
   list_params <- c(list_params, list(fulljson = jsonlite::toJSON(values, auto_unbox = TRUE)))
 
-  send_emon_request("input/post.json", params = list_params) %>%
-    httr::content(as = "text", encoding = "UTF-8")
+  send_emon_request("input/post.json", params = list_params)
 }
 
 #' Post bulk data to an input
@@ -59,14 +63,14 @@ post_bulk_data_to_input <- function(value, nodeid = "emoncmsr",
 #' Get all of the processes associated with a given input.
 #'
 #' @param inputid Input ID to get process list.
-#' @return An httr response object
+#' @return A tibble with success/failure and any additional messages
 #' @export
 get_input_processes <- function(inputid) {
   # emoncms.org only
   #send_emon_request("input/process/list.json", params = list(inputid = inputid))
 
   send_emon_request("input/process/get.json", params = list(inputid = inputid)) %>%
-    httr::content()
+    jsonlite::fromJSON()
 }
 
 #' Set input process
@@ -76,16 +80,16 @@ get_input_processes <- function(inputid) {
 #'
 #' @param inputid Input ID to modify
 #' @param processlist Full process list
-#' @return A tibble with success/failure and any additional messages
+#' @return A tibble with success/message columns
 #' @export
 set_input_process <- function(inputid, processlist) {
   send_emon_request("input/process/set.json",
                     params = list(inputid = inputid),
                     post_body = list(processlist = processlist),
                     method = "POST") %>%
-    httr::content() %>% tibble::as_tibble()
-}
+    jsonlite::fromJSON() %>% tibble::as_tibble()
 
+}
 
 #' Add input process
 #'
@@ -137,9 +141,10 @@ move_input_process <- function(inputid, processid, moveby) {
 #' Removes all processing steps associated with an input
 #'
 #' @param inputid Input ID to reset.
-#' @return An httr response object
+#' @return A tibble with success/message columns
 #' @export
 reset_input_processes <- function(inputid) {
   send_emon_request("input/process/reset.json",
-                    params = list(inputid = inputid))
+                    params = list(inputid = inputid)) %>%
+    jsonlite::fromJSON() %>% tibble::as_tibble()
 }
