@@ -13,7 +13,7 @@ post_bulk_data_to_input(data, reference_time = as.integer(Sys.time()))
 added/subtracted for each data point. Defaults to the current time.}
 }
 \value{
-An httr response object
+Success/failure as a boolean
 }
 \description{
 Post bulk data to an input

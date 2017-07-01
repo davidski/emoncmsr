@@ -134,7 +134,7 @@ get_feed_data <- function(feedid, start = as.integer(lubridate::now() -
       jsonlite::fromJSON() %>% tibble::as_tibble() %>%
       dplyr::mutate(V1 = as.POSIXct(V1/1000, origin = "1970-01-01")) %>%
       dplyr::rename(date = V1, value = V2) %>%
-      dplyr::mutate(feed_id = id)
+      dplyr::mutate(feed_id = feedid)
 }
 
 #' Get the fields associated with a feed

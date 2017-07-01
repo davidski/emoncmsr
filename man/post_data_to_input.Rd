@@ -12,7 +12,7 @@ post_data_to_input(values, nodeid = "emoncmsr")
 \item{node}{Node name to post}
 }
 \value{
-An httr response object
+Success/failure as a boolean
 }
 \description{
 Post data to an input

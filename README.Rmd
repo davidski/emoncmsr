@@ -3,7 +3,9 @@ output:
   github_document
 ---
 
-`emoncmsr` : Tools to work with the emonCMS API.
+# emoncmsr
+
+Tools to work with the emonCMS API.
 
 - emonCMS: https://openenergymonitor.org/
 
@@ -17,10 +19,14 @@ devtools::install_github("davidski/emoncmsr")
 * Set environment variables
     * EMONCMS_URI - Full URL (w/final slash) to API endpoint
     * EMONCMS_API_KEY - API key value (read or write) to API
+    
+## Applications
 
-```{r}
+Woring with inputs
+
+```{r inputs_and_feeds}
 library(emoncmsr)
-library(tidyverse)
+suppressPackageStartupMessages(library(tidyverse))
 
 # Inputs
 list_inputs()
@@ -68,12 +74,27 @@ post_bulk_data_to_input(dat, reference_time)
 get_feed_values(feed_response$feedid)
 ```
 
-```{r}
-# Clean up
+Deleteing feeds and inputs
+```{r clean_up}
 list_feeds() %>% filter(tag == "emoncmsr") %>% pull(id) %>% 
                           map(~ delete_feed(.x))
 list_inputs() %>% filter(nodeid == "emoncmsr") %>% pull(id) %>% 
                            map(~ delete_input(.x))
+```
+
+Retrieving and plotting feed data
+```{r plotting_feed_data}
+dat <- get_feed_data(1)
+gg <- ggplot(dat, aes(x = date, y = value)) + 
+  geom_line() + geom_smooth(method = 'loess') +
+  labs(title = "Power Usage", 
+       subtitle = "Seven day historical with smoothed overlay",
+       caption = "Demonstration plot for emoncmsr",
+       y = "Watts", 
+       x = NULL) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_minimal()
+gg
 ```
 
 ## Test results

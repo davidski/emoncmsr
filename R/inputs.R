@@ -45,7 +45,7 @@ delete_input <- function(inputid) {
 #'
 #' @param values List of name/value data pairs to post
 #' @param node Node name to post
-#' @return An httr response object
+#' @return Success/failure as a boolean
 #' @export
 post_data_to_input <- function(values, nodeid = "emoncmsr") {
 
@@ -65,7 +65,7 @@ post_data_to_input <- function(values, nodeid = "emoncmsr") {
 #' @param data Dataframe of offset, nodeid, values to post to the input.
 #' @param reference_time A reference UNIX timestamp to which all offsets are
 #'     added/subtracted for each data point. Defaults to the current time.
-#' @return An httr response object
+#' @return Success/failure as a boolean
 #' @importFrom dplyr %>%
 #' @export
 post_bulk_data_to_input <- function(data,
@@ -76,7 +76,6 @@ post_bulk_data_to_input <- function(data,
                     post_body = list(data = bulk_data),
                     method = "POST")
 }
-
 #' Get input processes
 #'
 #' Get all of the processes associated with a given input.

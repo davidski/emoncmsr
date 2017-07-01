@@ -1,5 +1,8 @@
 
-`emoncmsr` : Tools to work with the emonCMS API.
+emoncmsr
+========
+
+Tools to work with the emonCMS API.
 
 -   emonCMS: <https://openenergymonitor.org/>
 
@@ -17,24 +20,15 @@ Usage
     -   EMONCMS\_URI - Full URL (w/final slash) to API endpoint
     -   EMONCMS\_API\_KEY - API key value (read or write) to API
 
+Applications
+------------
+
+Woring with inputs
+
 ``` r
 library(emoncmsr)
-library(tidyverse)
-```
+suppressPackageStartupMessages(library(tidyverse))
 
-    ## Loading tidyverse: ggplot2
-    ## Loading tidyverse: tibble
-    ## Loading tidyverse: tidyr
-    ## Loading tidyverse: readr
-    ## Loading tidyverse: purrr
-    ## Loading tidyverse: dplyr
-
-    ## Conflicts with tidy packages ----------------------------------------------
-
-    ## filter(): dplyr, stats
-    ## lag():    dplyr, stats
-
-``` r
 # Inputs
 list_inputs()
 ```
@@ -74,7 +68,7 @@ list_inputs() %>% filter(nodeid == "emoncmsr", name == "coffee")
     ## # A tibble: 1 x 7
     ##      id   nodeid   name description processList       time value
     ##   <chr>    <chr>  <chr>       <chr>       <chr>      <int> <dbl>
-    ## 1    44 emoncmsr coffee                         1498848166    42
+    ## 1    80 emoncmsr coffee                         1498921270    42
 
 ``` r
 # store the id of the new input
@@ -82,7 +76,7 @@ inputid <- list_inputs() %>% filter(nodeid == "emoncmsr", name == "coffee") %>% 
 inputid
 ```
 
-    ## [1] "44"
+    ## [1] "80"
 
 ``` r
 # set a friendly description for our new input
@@ -101,7 +95,7 @@ list_inputs() %>% filter(id == inputid)
     ## # A tibble: 1 x 7
     ##      id   nodeid   name                     description processList
     ##   <chr>    <chr>  <chr>                           <chr>       <chr>
-    ## 1    44 emoncmsr coffee cups of coffee remaining in pot            
+    ## 1    80 emoncmsr coffee cups of coffee remaining in pot            
     ## # ... with 2 more variables: time <int>, value <dbl>
 
 ``` r
@@ -113,7 +107,7 @@ feed_response
     ## # A tibble: 1 x 3
     ##   success feedid result
     ##     <lgl>  <int>  <lgl>
-    ## 1    TRUE     43   TRUE
+    ## 1    TRUE     55   TRUE
 
 ``` r
 list_feeds() %>% filter(id == feed_response$feedid)
@@ -122,7 +116,7 @@ list_feeds() %>% filter(id == feed_response$feedid)
     ## # A tibble: 1 x 11
     ##      id userid        name datatype      tag public  size engine
     ##   <chr>  <chr>       <chr>    <chr>    <chr>  <chr> <chr>  <chr>
-    ## 1    43      1 coffeelevel        1 emoncmsr            0      5
+    ## 1    55      1 coffeelevel        1 emoncmsr            0      5
     ## # ... with 3 more variables: processList <chr>, time <int>, value <dbl>
 
 ``` r
@@ -139,7 +133,7 @@ set_input_process(inputid, paste(1, feed_response$feedid, sep = ":"))
 get_input_processes(inputid)
 ```
 
-    ## [1] "1:43"
+    ## [1] "1:55"
 
 ``` r
 # Post new data to all three new inputs
@@ -169,9 +163,9 @@ list_inputs() %>% filter(nodeid == "emoncmsr")
     ## # A tibble: 3 x 7
     ##      id   nodeid   name                     description processList
     ##   <chr>    <chr>  <chr>                           <chr>       <chr>
-    ## 1    44 emoncmsr coffee cups of coffee remaining in pot        1:43
-    ## 2    45 emoncmsr    tea                                            
-    ## 3    46 emoncmsr  water                                            
+    ## 1    80 emoncmsr coffee cups of coffee remaining in pot        1:55
+    ## 2    81 emoncmsr    tea                                            
+    ## 3    82 emoncmsr  water                                            
     ## # ... with 2 more variables: time <int>, value <dbl>
 
 ``` r
@@ -190,10 +184,11 @@ get_feed_values(feed_response$feedid)
     ## # A tibble: 1 x 2
     ##   feed_id value
     ##     <int> <int>
-    ## 1      43   100
+    ## 1      55   100
+
+Deleteing feeds and inputs
 
 ``` r
-# Clean up
 list_feeds() %>% filter(tag == "emoncmsr") %>% pull(id) %>% 
                           map(~ delete_feed(.x))
 ```
@@ -218,6 +213,24 @@ list_inputs() %>% filter(nodeid == "emoncmsr") %>% pull(id) %>%
     ## [[3]]
     ## [1] TRUE
 
+Retrieving and plotting feed data
+
+``` r
+dat <- get_feed_data(1)
+gg <- ggplot(dat, aes(x = date, y = value)) + 
+  geom_line() + geom_smooth(method = 'loess') +
+  labs(title = "Power Usage", 
+       subtitle = "Seven day historical with smoothed overlay",
+       caption = "Demonstration plot for emoncmsr",
+       y = "Watts", 
+       x = NULL) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_minimal()
+gg
+```
+
+![](README_files/figure-markdown_github-ascii_identifiers/plotting_feed_data-1.png)
+
 Test results
 ------------
 
@@ -241,7 +254,7 @@ library(testthat)
 date()
 ```
 
-    ## [1] "Fri Jun 30 11:42:47 2017"
+    ## [1] "Sat Jul 01 08:01:13 2017"
 
 ``` r
 test_dir("tests/")
