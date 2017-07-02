@@ -94,48 +94,58 @@ get_input_processes(inputid)
 
 Now that we have our feed set up, let's send some updated beverage level sensor 
 data. We'll first send a single timepoint set of values, then demonstrate using 
-the bulk data inteface to send multiple timeponts of data. After sending the 
-readings we'll read the current values from the feed to show that things are 
-flowing correctly.
+the bulk data inteface to several days of simulated data in a single call. 
 
-```{r post_data_to_inputs}
+After sending the readings we'll read the feed metadata to demonstrate that data 
+has flowed from the input to the feed.
+
+```{r demonstrate_input_to_feed_posting}
 # Post a single set of readings to all three new inputs
 dat <- list(coffee = 86, tea = 100, water = 4)
 post_data_to_input(dat)
 
-# We can also use the bulk data input format for sending a dataframe 
-# worth of data, all at different offsets to an optional timestamp
-dat <- tibble::tribble(~offset, ~nodeid, ~value,
-                       -100, "emoncmsr", list(coffee = 100),
-                       -50, "emoncmsr", list(tea = 50),
-                       -10, "emoncmsr", list(water = 10))
-post_bulk_data_to_input(dat)
-
 # show the values we just posted appeared in the inputs
 list_inputs() %>% filter(nodeid == "emoncmsr")
 
-# we can also post with a specific reference time
-reference_time <- lubridate::as_datetime("2017-03-27 01:30:00") %>% as.integer()
-post_bulk_data_to_input(dat, reference_time)
+# We can also use the bulk data input format for sending a dataframe 
+# worth of data, all at different offsets to an optional timestamp
+interval <- get_feed_metadata(feed_response$feedid)$interval
+end_time <- lubridate::now() %>% as.integer()
+end_time <- end_time - (end_time %% interval)
+start_time <- (lubridate::now() - lubridate::ddays(3)) %>% as.integer()
+start_time <- start_time - (start_time %% interval)
 
-# show the logged input made it to our new feed
-get_feed_values(feed_response$feedid)
+times <- seq(start_time, end_time, by = interval)
+dat <- tibble(offset = times, nodeid = "emoncmsr")
+dat <- bind_cols(dat, tibble(value = map(times, ~list("coffee" = sample(1:10, size=1)))))
+post_bulk_data_to_input(dat, reference_time = 0)
+# this large a bulk post can take a moment to process, sleep for a few seconds
+Sys.sleep(5)
+
+# we can also post with a specific reference time, though we don't demonstrate
+# that here...
+# reference_time <- lubridate::as_datetime("2017-03-27 01:30:00") %>% as.integer()
+# post_bulk_data_to_input(dat, reference_time)
+
+
+# show the feed's info
+get_feed_metadata(feed_response$feedid)
 ```
 
 Beverage monitoring systems [are GO](https://en.wikipedia.org/wiki/Thunderbirds_Are_Go)! 
-Let's pull a set of data from a feed and plot that data over time, adding 
+Let's pull a set of data from our feed and plot that data over time, adding 
 a smoothed curve for grins.
 
 ```{r plotting_feed_data}
-dat <- get_feed_data(1)
+dat <- get_feed_data(feed_response$feedid)
 gg <- ggplot(dat, aes(x = date, y = value)) + 
   geom_line() + geom_smooth(method = 'loess') +
-  labs(title = "Power Usage", 
+  labs(title = "Coffee Levels", 
        subtitle = "Seven day historical with smoothed overlay",
        caption = "Demonstration plot for emoncmsr",
        y = "Watts", 
        x = NULL) +
-  scale_y_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::pretty_breaks()) +
   theme_minimal()
 gg
 ```

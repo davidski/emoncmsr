@@ -64,7 +64,6 @@ delete_feed <- function(feedid) {
 #' @export
 get_buffer_size <- function() {
     send_emon_request("feed/buffersize.json") %>%
-      httr::content(as = "text", encoding = "UTF-8") %>%
       as.integer()
 }
 

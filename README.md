@@ -75,7 +75,7 @@ list_inputs() %>% filter(nodeid == "emoncmsr", name == "coffee")
     ## # A tibble: 1 x 7
     ##      id   nodeid   name description processList       time value
     ##   <chr>    <chr>  <chr>       <chr>       <chr>      <int> <dbl>
-    ## 1   116 emoncmsr coffee                         1498926098    42
+    ## 1   145 emoncmsr coffee                         1498965431    42
 
 ``` r
 # store the id of the new input
@@ -85,7 +85,7 @@ inputid <- list_inputs() %>%
 inputid
 ```
 
-    ## [1] "116"
+    ## [1] "145"
 
 ``` r
 # set a friendly description for our new input
@@ -104,7 +104,7 @@ list_inputs() %>% filter(id == inputid)
     ## # A tibble: 1 x 7
     ##      id   nodeid   name                     description processList
     ##   <chr>    <chr>  <chr>                           <chr>       <chr>
-    ## 1   116 emoncmsr coffee cups of coffee remaining in pot            
+    ## 1   145 emoncmsr coffee cups of coffee remaining in pot            
     ## # ... with 2 more variables: time <int>, value <dbl>
 
 That wasn't so bad!
@@ -120,7 +120,7 @@ feed_response
     ## # A tibble: 1 x 3
     ##   success feedid result
     ##     <lgl>  <int>  <lgl>
-    ## 1    TRUE     67   TRUE
+    ## 1    TRUE     77   TRUE
 
 ``` r
 # Show that the feed exists
@@ -130,7 +130,7 @@ list_feeds() %>% filter(id == feed_response$feedid)
     ## # A tibble: 1 x 11
     ##      id userid        name datatype      tag public  size engine
     ##   <chr>  <chr>       <chr>    <chr>    <chr>  <chr> <chr>  <chr>
-    ## 1    67      1 coffeelevel        1 emoncmsr            0      5
+    ## 1    77      1 coffeelevel        1 emoncmsr            0      5
     ## # ... with 3 more variables: processList <chr>, time <int>, value <dbl>
 
 ``` r
@@ -147,26 +147,16 @@ set_input_process(inputid, paste(1, feed_response$feedid, sep = ":"))
 get_input_processes(inputid)
 ```
 
-    ## [1] "1:67"
+    ## [1] "1:77"
 
-Now that we have our feed set up, let's send some updated beverage level sensor data. We'll first send a single timepoint set of values, then demonstrate using the bulk data inteface to send multiple timeponts of data. After sending the readings we'll read the current values from the feed to show that things are flowing correctly.
+Now that we have our feed set up, let's send some updated beverage level sensor data. We'll first send a single timepoint set of values, then demonstrate using the bulk data inteface to several days of simulated data in a single call.
+
+After sending the readings we'll read the feed metadata to demonstrate that data has flowed from the input to the feed.
 
 ``` r
 # Post a single set of readings to all three new inputs
 dat <- list(coffee = 86, tea = 100, water = 4)
 post_data_to_input(dat)
-```
-
-    ## [1] TRUE
-
-``` r
-# We can also use the bulk data input format for sending a dataframe 
-# worth of data, all at different offsets to an optional timestamp
-dat <- tibble::tribble(~offset, ~nodeid, ~value,
-                       -100, "emoncmsr", list(coffee = 100),
-                       -50, "emoncmsr", list(tea = 50),
-                       -10, "emoncmsr", list(water = 10))
-post_bulk_data_to_input(dat)
 ```
 
     ## [1] TRUE
@@ -179,41 +169,59 @@ list_inputs() %>% filter(nodeid == "emoncmsr")
     ## # A tibble: 3 x 7
     ##      id   nodeid   name                     description processList
     ##   <chr>    <chr>  <chr>                           <chr>       <chr>
-    ## 1   116 emoncmsr coffee cups of coffee remaining in pot        1:67
-    ## 2   117 emoncmsr    tea                                            
-    ## 3   118 emoncmsr  water                                            
+    ## 1   145 emoncmsr coffee cups of coffee remaining in pot        1:77
+    ## 2   146 emoncmsr    tea                                            
+    ## 3   147 emoncmsr  water                                            
     ## # ... with 2 more variables: time <int>, value <dbl>
 
 ``` r
-# we can also post with a specific reference time
-reference_time <- lubridate::as_datetime("2017-03-27 01:30:00") %>% as.integer()
-post_bulk_data_to_input(dat, reference_time)
+# We can also use the bulk data input format for sending a dataframe 
+# worth of data, all at different offsets to an optional timestamp
+interval <- get_feed_metadata(feed_response$feedid)$interval
+end_time <- lubridate::now() %>% as.integer()
+end_time <- end_time - (end_time %% interval)
+start_time <- (lubridate::now() - lubridate::ddays(3)) %>% as.integer()
+start_time <- start_time - (start_time %% interval)
+
+times <- seq(start_time, end_time, by = interval)
+dat <- tibble(offset = times, nodeid = "emoncmsr")
+dat <- bind_cols(dat, tibble(value = map(times, ~list("coffee" = sample(1:10, size=1)))))
+post_bulk_data_to_input(dat, reference_time = 0)
 ```
 
     ## [1] TRUE
 
 ``` r
-# show the logged input made it to our new feed
-get_feed_values(feed_response$feedid)
+# this large a bulk post can take a moment to process, sleep for a few seconds
+Sys.sleep(5)
+
+# we can also post with a specific reference time, though we don't demonstrate
+# that here...
+# reference_time <- lubridate::as_datetime("2017-03-27 01:30:00") %>% as.integer()
+# post_bulk_data_to_input(dat, reference_time)
+
+
+# show the feed's info
+get_feed_metadata(feed_response$feedid)
 ```
 
-    ## # A tibble: 1 x 2
-    ##   feed_id value
-    ##     <int> <int>
-    ## 1      67   100
+    ## # A tibble: 1 x 4
+    ##   feed_id interval start_time npoints
+    ##     <int>    <int>      <int>   <int>
+    ## 1      77       10 1498706230   24683
 
-Beverage monitoring systems [are GO](https://en.wikipedia.org/wiki/Thunderbirds_Are_Go)! Let's pull a set of data from a feed and plot that data over time, adding a smoothed curve for grins.
+Beverage monitoring systems [are GO](https://en.wikipedia.org/wiki/Thunderbirds_Are_Go)! Let's pull a set of data from our feed and plot that data over time, adding a smoothed curve for grins.
 
 ``` r
-dat <- get_feed_data(1)
+dat <- get_feed_data(feed_response$feedid)
 gg <- ggplot(dat, aes(x = date, y = value)) + 
   geom_line() + geom_smooth(method = 'loess') +
-  labs(title = "Power Usage", 
+  labs(title = "Coffee Levels", 
        subtitle = "Seven day historical with smoothed overlay",
        caption = "Demonstration plot for emoncmsr",
        y = "Watts", 
        x = NULL) +
-  scale_y_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::pretty_breaks()) +
   theme_minimal()
 gg
 ```
@@ -270,7 +278,7 @@ library(testthat)
 date()
 ```
 
-    ## [1] "Sat Jul 01 09:21:39 2017"
+    ## [1] "Sat Jul 01 20:18:09 2017"
 
 ``` r
 test_dir("tests/")
