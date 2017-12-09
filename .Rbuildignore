@@ -4,6 +4,7 @@
 CODE_OF_CONDUCT.md
 INSTALL_EXTRAS.md
 README.Rmd
+README_files
 cran-comments.md
 ^appveyor\.yml$
 ^\.travis\.yml$
