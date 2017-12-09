@@ -5,6 +5,8 @@
 #' @param authenticated Retrieve authenticated feeds
 #' @return An httr response object
 #' @importFrom dplyr %>%
+#' @importFrom jsonlite fromJSON
+#' @importFrom tibble as_tibble
 #' @export
 list_feeds <- function(authenticated = TRUE) {
     send_emon_request("feed/list.json",
@@ -21,6 +23,9 @@ list_feeds <- function(authenticated = TRUE) {
 #' @param engine Timeseries storage engine. Defaults to PHPFINA (5). May
 #'     also be VIRTUAL (7)).
 #' @param interval Interval of time series in seconds. Defaults to 10.
+#' @importFrom dplyr %>%
+#' @importFrom jsonlite fromJSON
+#' @importFrom tibble as_tibble
 #' @importFrom dplyr %>%
 #' @return Tibble with id of new feed
 #' @export
@@ -43,6 +48,7 @@ create_feed <- function(name, tag, datatype = c("realtime", "daily"), engine = c
 #' @param feedid ID (integer) of the feed to delete.
 #' @return A tibble of data feed values
 #' @importFrom dplyr %>%
+#' @importFrom tibble tibble as_tibble
 #' @export
 delete_feed <- function(feedid) {
     dat <- send_emon_request("feed/delete.json", list(id = feedid)) %>%
@@ -84,6 +90,8 @@ get_feed_size <- function() {
 #' @return A tibble of data feed values
 #' @export
 #' @importFrom dplyr %>%
+#' @importFrom jsonlite fromJSON
+#' @importFrom tibble tibble
 get_feed_values <- function(feedid = 1) {
     dat <- if (length(feedid) == 1) {
         send_emon_request("feed/value.json", list(id = feedid))
@@ -106,7 +114,8 @@ get_feed_values <- function(feedid = 1) {
 #' @param feedid Feed ID to retrieve.
 #' @return A tibble of metadata information
 #' @export
-#' @importFrom dplyr %>%
+#' @importFrom dplyr %>% bind_rows
+#' @importFrom jsonlite fromJSON
 get_feed_metadata <- function(feedid) {
     send_emon_request("feed/getmeta.json", list(id = feedid)) %>%
         jsonlite::fromJSON() %>% dplyr::bind_rows() %>%
@@ -119,9 +128,13 @@ get_feed_metadata <- function(feedid) {
 #' @param start Start time (must be coercable by lubridate to unixtime)
 #' @param end End time (must be coercable by lubridate to unixtime). Defaults
 #'     to now.
+#' @param interval Interval.
 #' @return Tibble
 #' @export
-#' @importFrom dplyr %>%
+#' @importFrom dplyr %>% mutate rename mutate
+#' @importFrom jsonlite fromJSON
+#' @importFrom lubridate ddays now
+#' @importFrom tibble as_tibble
 get_feed_data <- function(feedid, start = as.integer(lubridate::now() -
     lubridate::ddays(7)), end = as.integer(lubridate::now()),
     interval = 60 * 30) {
@@ -143,6 +156,9 @@ get_feed_data <- function(feedid, start = as.integer(lubridate::now() -
 #' @return A tibble with all feed information
 #' @export
 #' @importFrom dplyr %>%
+#' @importFrom purrr keep
+#' @importFrom jsonlite fromJSON
+#' @importFrom tibble as_tibble
 get_feed_fields <- function(feedid) {
     # https://emoncms.org/feed/aget.json?id=1
     send_emon_request("feed/aget.json", list(id = feedid)) %>%

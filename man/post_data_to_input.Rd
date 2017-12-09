@@ -9,7 +9,7 @@ post_data_to_input(values, nodeid = "emoncmsr")
 \arguments{
 \item{values}{List of name/value data pairs to post}
 
-\item{node}{Node name to post}
+\item{nodeid}{Node name to post}
 }
 \value{
 Success/failure as a boolean

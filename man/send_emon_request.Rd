@@ -19,7 +19,7 @@ send_emon_request(uri, params = NULL, method = "GET", post_body = NULL,
 \item{verbose}{If set (boolean), will warn on the query parameters to be sent}
 }
 \value{
-An httr response object
+An httr response object content user_agent http_error
 }
 \description{
 Send a request to emonCMS

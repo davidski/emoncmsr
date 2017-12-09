@@ -1,6 +1,7 @@
 #' Send a request to emonCMS
 #'
-#' @return An httr response object
+#' @return An httr response object content user_agent http_error
+#' @importFrom httr GET POST
 #' @param uri Leaf node of API endpoint. Appended to `emoncms_uri()`.
 #' @param params Any additional query parameters to send. Defaults to NULL.
 #' @param method Wether to GET (default) or POST the call.
@@ -37,7 +38,7 @@ send_emon_request <- function(uri, params = NULL, method = "GET",
   }
 
   response <- httr::content(response, as = "text", encoding = "UTF-8")
-  if (response == "ok") { TRUE } else { response }
+  if (response == "ok") { TRUE } else {response}
 }
 
 #' Fetch URI to the emoncms server

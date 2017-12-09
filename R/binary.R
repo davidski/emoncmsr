@@ -1,16 +1,19 @@
 #' Read a binary PHPFINA file
 #'
 #' @return XTS object of the data in the feed.
-#' @param file Full path to bare (no file extension) feed
+#' @param feedfile Full path to bare (no file extension) feed
 #' @export
-#' @importFrom dplyr %>%
-read_feed_file <- function(feed_id) {
+#' @importFrom dplyr %>% pull
+#' @importFrom xts xts
+#' @importFrom readr parse_number
+#' @importFrom lubridate dseconds
+read_feed_file <- function(feedfile) {
     bytes_per_record <- 4
 
-    metadata_file <- paste0(feed_id, ".meta")
+    metadata_file <- paste0(feedfile, ".meta")
     if (!file.exists(metadata_file))
         stop("Feed metadata file not found")
-    data_file <- paste0(feed_id, ".dat")
+    data_file <- paste0(feedfile, ".dat")
     if (!file.exists(data_file))
         stop("Feed data file not found")
 

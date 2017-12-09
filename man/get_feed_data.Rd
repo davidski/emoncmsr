@@ -15,6 +15,8 @@ get_feed_data(feedid, start = as.integer(lubridate::now() -
 
 \item{end}{End time (must be coercable by lubridate to unixtime). Defaults
 to now.}
+
+\item{interval}{Interval.}
 }
 \value{
 Tibble

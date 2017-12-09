@@ -5,6 +5,9 @@ output:
 
 ## `emoncmsr`: R interface to the [emonCMS](https://github.com/emoncms/emoncms) API
 
+[![Travis-CI Build Status](https://travis-ci.org/davidski/emoncmsr.svg?branch=master)](https://travis-ci.org/davidski/emoncmsr)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/davidski/emoncmsr?branch=master&svg=true)](https://ci.appveyor.com/project/davidski/emoncmsr)
+[![Coverage Status](https://img.shields.io/codecov/c/github/davidski/emoncmsr/master.svg)](https://codecov.io/github/davidski/emoncmsr?branch=master)
 
 This package provides the tools to create, delete, and manage inputs and feeds 
 in the open source energy, temperature and environmental monitoring sytem from 
@@ -55,7 +58,7 @@ node identifier of `emoncmsr`, read back the value of the coffee level we just
 posted, store the ID of this new coffee input for future use, and set a useful 
 description for the new input. Whew! Let's get to it!
 
-```{r posting_to_inputs}
+```{r posting_to_inputs, eval=FALSE}
 # create some beverage data
 dat <- list(coffee = 42, tea = 6, water = 42)
 post_data_to_input(dat)
@@ -78,7 +81,7 @@ values aren't being stored or processed in any way. We'd like to monitor the
 levels of coffee over time. We need to create a feed, then configure the 
 coffee input to send its data to that feed.
 
-```{r creating_the_coffee_feed}
+```{r creating_the_coffee_feed, eval=FALSE}
 
 # Create a feed for the coffee level
 feed_response <- create_feed("coffeelevel", "emoncmsr")

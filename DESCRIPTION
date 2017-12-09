@@ -15,11 +15,14 @@ Imports:
   httr,
   tibble,
   lubridate,
-  jsonlite
+  jsonlite,
+  readr,
+  xts
 URL: http://github.com/davidski/emoncmsr
 BugReports: https://github.com/davidski/emoncmsr/issues
 RoxygenNote: 6.0.1
 Suggests: testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    covr
 VignetteBuilder: knitr

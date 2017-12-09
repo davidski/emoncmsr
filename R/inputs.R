@@ -4,6 +4,8 @@
 #'
 #' @return A tibble of feeds and their current values
 #' @importFrom dplyr %>%
+#' @importFrom jsonlite fromJSON
+#' @importFrom tibble as_tibble
 #' @export
 list_inputs <- function() {
   send_emon_request("input/list.json") %>%
@@ -15,6 +17,9 @@ list_inputs <- function() {
 #' @param inputid ID of the input to delete
 #' @param field Name of field to modify
 #' @param value New value of the field
+#' @importFrom dplyr %>%
+#' @importFrom jsonlite fromJSON
+#' @importFrom tibble as_tibble
 #' @return Tibble with succes, message columns
 #' @export
 set_input_field <- function(inputid, field, value) {
@@ -29,6 +34,8 @@ set_input_field <- function(inputid, field, value) {
 #' Delete an input by id
 #'
 #' @param inputid ID of the input to delete
+#' @importFrom dplyr %>%
+#' @importFrom jsonlite fromJSON
 #' @return Boolean success/failure
 #' @export
 delete_input <- function(inputid) {
@@ -44,7 +51,7 @@ delete_input <- function(inputid) {
 #' Post data to an input
 #'
 #' @param values List of name/value data pairs to post
-#' @param node Node name to post
+#' @param nodeid Node name to post
 #' @return Success/failure as a boolean
 #' @export
 post_data_to_input <- function(values, nodeid = "emoncmsr") {
@@ -67,6 +74,7 @@ post_data_to_input <- function(values, nodeid = "emoncmsr") {
 #'     added/subtracted for each data point. Defaults to the current time.
 #' @return Success/failure as a boolean
 #' @importFrom dplyr %>%
+#' @importFrom jsonlite toJSON
 #' @export
 post_bulk_data_to_input <- function(data,
                                     reference_time = as.integer(Sys.time())) {
@@ -82,6 +90,8 @@ post_bulk_data_to_input <- function(data,
 #'
 #' @param inputid Input ID to get process list.
 #' @return A tibble with success/failure and any additional messages
+#' @importFrom dplyr %>%
+#' @importFrom jsonlite fromJSON
 #' @export
 get_input_processes <- function(inputid) {
   # emoncms.org only
@@ -99,6 +109,9 @@ get_input_processes <- function(inputid) {
 #' @param inputid Input ID to modify
 #' @param processlist Full process list
 #' @return A tibble with success/message columns
+#' @importFrom dplyr %>%
+#' @importFrom jsonlite fromJSON
+#' @importFrom tibble as_tibble
 #' @export
 set_input_process <- function(inputid, processlist) {
   send_emon_request("input/process/set.json",
@@ -160,6 +173,9 @@ move_input_process <- function(inputid, processid, moveby) {
 #'
 #' @param inputid Input ID to reset.
 #' @return A tibble with success/message columns
+#' @importFrom dplyr %>%
+#' @importFrom tibble as_tibble
+#' @importFrom jsonlite fromJSON
 #' @export
 reset_input_processes <- function(inputid) {
   send_emon_request("input/process/reset.json",
