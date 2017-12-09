@@ -2,6 +2,8 @@
 `emoncmsr`: R interface to the [emonCMS](https://github.com/emoncms/emoncms) API
 --------------------------------------------------------------------------------
 
+[![Travis-CI Build Status](https://travis-ci.org/davidski/emoncmsr.svg?branch=master)](https://travis-ci.org/davidski/emoncmsr) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/davidski/emoncmsr?branch=master&svg=true)](https://ci.appveyor.com/project/davidski/emoncmsr) [![Coverage Status](https://img.shields.io/codecov/c/github/davidski/emoncmsr/master.svg)](https://codecov.io/github/davidski/emoncmsr?branch=master)
+
 This package provides the tools to create, delete, and manage inputs and feeds in the open source energy, temperature and environmental monitoring sytem from [OpenEnergyMonitor](https://openenergymonitor.org/).
 
 emonCMS has two flavors, a self-hosted version and a hosted solution at [emoncms.org](https://emoncms.org). The two APIs are similar but differ in a number of areas. This package only supports the self-hosted flavor, though there are several unsupported functions for the hosted version.
@@ -38,25 +40,21 @@ suppressPackageStartupMessages(library(tidyverse))  # use the tidyverse
 list_inputs()
 ```
 
-    ## # A tibble: 15 x 7
-    ##       id  nodeid     name                      description
-    ##  * <chr>   <chr>    <chr>                            <chr>
-    ##  1     1 emontx1   power1                    House Power 1
-    ##  2     2 emontx1   power2                    House Power 2
-    ##  3     3 emontx1   power3      Office Branch Circuit Power
-    ##  4     5 emontx1     vrms                                 
-    ##  5     6 emontx1    temp1                    Basement Temp
-    ##  6     7 emontx1    temp2                                 
-    ##  7     8 emontx1    temp3                                 
-    ##  8     9 emontx1    temp4                                 
-    ##  9    10 emontx1    temp5                                 
-    ## 10    11 emontx1    temp6                                 
-    ## 11    12 emontx1    pulse                                 
-    ## 12    13 emontx1     rssi                                 
-    ## 13    14 emontx1   power4 Living Room Branch Circuit Power
-    ## 14    15 weather     temp                                 
-    ## 15    16 weather humidity                                 
-    ## # ... with 3 more variables: processList <chr>, time <int>, value <dbl>
+    ## # A tibble: 28 x 7
+    ##       id  nodeid   name                 description
+    ##  * <chr>   <chr>  <chr>                       <chr>
+    ##  1     0 emonth5   rssi                            
+    ##  2     1 emontx1 power1               House Power 1
+    ##  3     2 emontx1 power2               House Power 2
+    ##  4     3 emontx1 power3 Office Branch Circuit Power
+    ##  5     5 emontx1   vrms                            
+    ##  6     6 emontx1  temp1               Basement Temp
+    ##  7     7 emontx1  temp2                            
+    ##  8     8 emontx1  temp3                            
+    ##  9     9 emontx1  temp4                            
+    ## 10    10 emontx1  temp5                            
+    ## # ... with 18 more rows, and 3 more variables: processList <chr>,
+    ## #   time <int>, value <dbl>
 
 Now we'll create some simulated data, post it to emonCMS as inputs using a node identifier of `emoncmsr`, read back the value of the coffee level we just posted, store the ID of this new coffee input for future use, and set a useful description for the new input. Whew! Let's get to it!
 
@@ -75,7 +73,7 @@ list_inputs() %>% filter(nodeid == "emoncmsr", name == "coffee")
     ## # A tibble: 1 x 7
     ##      id   nodeid   name description processList       time value
     ##   <chr>    <chr>  <chr>       <chr>       <chr>      <int> <dbl>
-    ## 1   145 emoncmsr coffee                         1498965431    42
+    ## 1   163 emoncmsr coffee                         1512840812    42
 
 ``` r
 # store the id of the new input
@@ -85,7 +83,7 @@ inputid <- list_inputs() %>%
 inputid
 ```
 
-    ## [1] "145"
+    ## [1] "163"
 
 ``` r
 # set a friendly description for our new input
@@ -104,7 +102,7 @@ list_inputs() %>% filter(id == inputid)
     ## # A tibble: 1 x 7
     ##      id   nodeid   name                     description processList
     ##   <chr>    <chr>  <chr>                           <chr>       <chr>
-    ## 1   145 emoncmsr coffee cups of coffee remaining in pot            
+    ## 1   163 emoncmsr coffee cups of coffee remaining in pot            
     ## # ... with 2 more variables: time <int>, value <dbl>
 
 That wasn't so bad!
@@ -120,7 +118,7 @@ feed_response
     ## # A tibble: 1 x 3
     ##   success feedid result
     ##     <lgl>  <int>  <lgl>
-    ## 1    TRUE     77   TRUE
+    ## 1    TRUE     89   TRUE
 
 ``` r
 # Show that the feed exists
@@ -130,8 +128,8 @@ list_feeds() %>% filter(id == feed_response$feedid)
     ## # A tibble: 1 x 11
     ##      id userid        name datatype      tag public  size engine
     ##   <chr>  <chr>       <chr>    <chr>    <chr>  <chr> <chr>  <chr>
-    ## 1    77      1 coffeelevel        1 emoncmsr            0      5
-    ## # ... with 3 more variables: processList <chr>, time <int>, value <dbl>
+    ## 1    89      1 coffeelevel        1 emoncmsr            0      5
+    ## # ... with 3 more variables: processList <chr>, value <dbl>, time <int>
 
 ``` r
 # Hook up the coffee monitor to the feed
@@ -147,7 +145,7 @@ set_input_process(inputid, paste(1, feed_response$feedid, sep = ":"))
 get_input_processes(inputid)
 ```
 
-    ## [1] "1:77"
+    ## [1] "1:89"
 
 Now that we have our feed set up, let's send some updated beverage level sensor data. We'll first send a single timepoint set of values, then demonstrate using the bulk data inteface to several days of simulated data in a single call.
 
@@ -169,9 +167,9 @@ list_inputs() %>% filter(nodeid == "emoncmsr")
     ## # A tibble: 3 x 7
     ##      id   nodeid   name                     description processList
     ##   <chr>    <chr>  <chr>                           <chr>       <chr>
-    ## 1   145 emoncmsr coffee cups of coffee remaining in pot        1:77
-    ## 2   146 emoncmsr    tea                                            
-    ## 3   147 emoncmsr  water                                            
+    ## 1   163 emoncmsr coffee cups of coffee remaining in pot        1:89
+    ## 2   164 emoncmsr    tea                                            
+    ## 3   165 emoncmsr  water                                            
     ## # ... with 2 more variables: time <int>, value <dbl>
 
 ``` r
@@ -208,7 +206,7 @@ get_feed_metadata(feed_response$feedid)
     ## # A tibble: 1 x 4
     ##   feed_id interval start_time npoints
     ##     <int>    <int>      <int>   <int>
-    ## 1      77       10 1498706230   24683
+    ## 1      89       10 1512581610   25921
 
 Beverage monitoring systems [are GO](https://en.wikipedia.org/wiki/Thunderbirds_Are_Go)! Let's pull a set of data from our feed and plot that data over time, adding a smoothed curve for grins.
 
@@ -226,7 +224,7 @@ gg <- ggplot(dat, aes(x = date, y = value)) +
 gg
 ```
 
-![](README_files/figure-markdown_github-ascii_identifiers/plotting_feed_data-1.png)
+![](README_files/figure-markdown_github/plotting_feed_data-1.png)
 
 Finally, clean up the test inputs and feeds we created.
 
@@ -278,7 +276,7 @@ library(testthat)
 date()
 ```
 
-    ## [1] "Sat Jul 01 20:18:09 2017"
+    ## [1] "Sat Dec 09 09:34:53 2017"
 
 ``` r
 test_dir("tests/")
