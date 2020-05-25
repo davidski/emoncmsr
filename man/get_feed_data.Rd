@@ -4,9 +4,12 @@
 \alias{get_feed_data}
 \title{Get a timerange of data from a feed}
 \usage{
-get_feed_data(feedid, start = as.integer(lubridate::now() -
-  lubridate::ddays(7)), end = as.integer(lubridate::now()), interval = 60 *
-  30)
+get_feed_data(
+  feedid,
+  start = as.integer(lubridate::now() - lubridate::ddays(7)),
+  end = as.integer(lubridate::now()),
+  interval = 60 * 30
+)
 }
 \arguments{
 \item{feedid}{ID of feed}

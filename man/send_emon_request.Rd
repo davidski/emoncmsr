@@ -4,8 +4,13 @@
 \alias{send_emon_request}
 \title{Send a request to emonCMS}
 \usage{
-send_emon_request(uri, params = NULL, method = "GET", post_body = NULL,
-  verbose = FALSE)
+send_emon_request(
+  uri,
+  params = NULL,
+  method = "GET",
+  post_body = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{uri}{Leaf node of API endpoint. Appended to `emoncms_uri()`.}

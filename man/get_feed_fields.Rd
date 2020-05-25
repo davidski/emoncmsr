@@ -13,5 +13,5 @@ get_feed_fields(feedid)
 A tibble with all feed information
 }
 \description{
-This seems to redundent with the get_feeds function
+This seems to redundant with the get_feeds function
 }

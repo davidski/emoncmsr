@@ -1,7 +1,7 @@
 Package: emoncmsr
 Type: Package
 Title: EmonCMS API Interace Library
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: c(person("David", "Severski", email = "davidski@deadheaven.com", role = c("aut", "cre")))
 Description: Utilities for working with the OpenEnergyMonitor 
     <https://openergymonitor.org> EmonCMS API and feeds. Works on 
@@ -20,7 +20,7 @@ Imports:
   xts
 URL: http://github.com/davidski/emoncmsr
 BugReports: https://github.com/davidski/emoncmsr/issues
-RoxygenNote: 6.0.1
+RoxygenNote: 7.1.0
 Suggests: testthat,
     knitr,
     rmarkdown,

@@ -34,13 +34,13 @@ create_feed <- function(name, tag, datatype = c("realtime", "daily"), engine = c
   datatypes <- c("realtime" = 1, "daily" = 2)
   datatype <- unname(datatypes[match.arg(datatype)])
   engines <- c("phpfina" = 5, "virtual" = 7)
-    engine <- unname(engines[match.arg(engine)])
-    list_params <- list(tag = tag, name = name, datatype = datatype,
-                        engine = engine,
-                        options = paste0('{"interval":', interval, '}'))
-    send_emon_request("feed/create.json", params = list_params) %>%
-      jsonlite::fromJSON() %>%
-      tibble::as_tibble()
+  engine <- unname(engines[match.arg(engine)])
+  list_params <- list(tag = tag, name = name, datatype = datatype,
+                      engine = engine,
+                      options = paste0('{"interval":', interval, '}'))
+  send_emon_request("feed/create.json", params = list_params) %>%
+    jsonlite::fromJSON() %>%
+    tibble::as_tibble()
 }
 
 #' Delete a feed identified by ID.
@@ -140,18 +140,19 @@ get_feed_data <- function(feedid, start = as.integer(lubridate::now() -
     interval = 60 * 30) {
     start <- ceiling(start/interval) * interval * 1000
     end <- ceiling(end/interval) * interval * 1000
-    send_emon_request("feed/data.json",
+    resp <- send_emon_request("feed/data.json",
                       params = list(id = feedid, start = start, end = end,
                                     interval = interval)) %>%
-      jsonlite::fromJSON() %>% tibble::as_tibble() %>%
-      dplyr::mutate(V1 = as.POSIXct(V1/1000, origin = "1970-01-01")) %>%
-      dplyr::rename(date = V1, value = V2) %>%
+      jsonlite::fromJSON()
+    resp %>% `colnames<-`(c("date", "value")) %>%
+      tibble::as_tibble() %>%
+      dplyr::mutate(date = as.POSIXct(V1/1000, origin = "1970-01-01")) %>%
       dplyr::mutate(feed_id = feedid)
 }
 
 #' Get the fields associated with a feed
 #'
-#' This seems to redundent with the get_feeds function
+#' This seems to redundant with the get_feeds function
 #' @param feedid ID of the feed
 #' @return A tibble with all feed information
 #' @export

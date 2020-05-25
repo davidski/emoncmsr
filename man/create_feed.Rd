@@ -4,8 +4,13 @@
 \alias{create_feed}
 \title{Create a new feed.}
 \usage{
-create_feed(name, tag, datatype = c("realtime", "daily"),
-  engine = c("phpfina", "virtual"), interval = 10)
+create_feed(
+  name,
+  tag,
+  datatype = c("realtime", "daily"),
+  engine = c("phpfina", "virtual"),
+  interval = 10
+)
 }
 \arguments{
 \item{name}{Descriptive name for the new feed.}
