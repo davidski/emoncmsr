@@ -146,7 +146,7 @@ get_feed_data <- function(feedid, start = as.integer(lubridate::now() -
       jsonlite::fromJSON()
     resp %>% `colnames<-`(c("date", "value")) %>%
       tibble::as_tibble() %>%
-      dplyr::mutate(date = as.POSIXct(V1/1000, origin = "1970-01-01")) %>%
+      dplyr::mutate(date = as.POSIXct(date/1000, origin = "1970-01-01")) %>%
       dplyr::mutate(feed_id = feedid)
 }
 
