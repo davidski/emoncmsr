@@ -5,9 +5,10 @@ output:
 
 ## `emoncmsr`: R interface to the [emonCMS](https://github.com/emoncms/emoncms) API
 
-[![Travis-CI Build Status](https://travis-ci.org/davidski/emoncmsr.svg?branch=master)](https://travis-ci.org/davidski/emoncmsr)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/davidski/emoncmsr?branch=master&svg=true)](https://ci.appveyor.com/project/davidski/emoncmsr)
+<!-- badges: start -->
+[![R build status](https://github.com/davidski/emoncmsr/workflows/R-CMD-check/badge.svg)](https://github.com/davidski/emoncmsr/actions)
 [![Coverage Status](https://img.shields.io/codecov/c/github/davidski/emoncmsr/master.svg)](https://codecov.io/github/davidski/emoncmsr?branch=master)
+<!-- badges: end -->
 
 This package provides the tools to create, delete, and manage inputs and feeds 
 in the open source energy, temperature and environmental monitoring sytem from 
