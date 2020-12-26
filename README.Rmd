@@ -98,7 +98,7 @@ get_input_processes(inputid)
 
 Now that we have our feed set up, let's send some updated beverage level sensor 
 data. We'll first send a single timepoint set of values, then demonstrate using 
-the bulk data inteface to several days of simulated data in a single call. 
+the bulk data interface to several days of simulated data in a single call. 
 
 After sending the readings we'll read the feed metadata to demonstrate that data 
 has flowed from the input to the feed.
